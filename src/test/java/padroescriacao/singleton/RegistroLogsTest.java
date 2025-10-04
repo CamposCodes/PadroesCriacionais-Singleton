@@ -18,4 +18,35 @@ class RegistroLogsTest {
         assertEquals("Usuario Teste", RegistroLogs.getInstance().getUsuarioAtivo());
     }
 
+    @Test
+    public void deveLancarExcecaoQuandoNivelForNulo() {
+        RegistroLogs logs = RegistroLogs.getInstance();
+        assertThrows(IllegalArgumentException.class, () -> {
+            logs.registrar(null, "Mensagem teste");
+        });
+    }
+
+    @Test
+    public void deveLancarExcecaoQuandoMensagemForNula() {
+        RegistroLogs logs = RegistroLogs.getInstance();
+        assertThrows(IllegalArgumentException.class, () -> {
+            logs.registrar("INFO", null);
+        });
+    }
+
+    @Test
+    public void deveLancarExcecaoQuandoNivelForVazio() {
+        RegistroLogs logs = RegistroLogs.getInstance();
+        assertThrows(IllegalArgumentException.class, () -> {
+            logs.registrar("", "Mensagem teste");
+        });
+    }
+
+    @Test
+    public void deveLancarExcecaoQuandoMensagemForVazia() {
+        RegistroLogs logs = RegistroLogs.getInstance();
+        assertThrows(IllegalArgumentException.class, () -> {
+            logs.registrar("INFO", "");
+        });
+    }
 }

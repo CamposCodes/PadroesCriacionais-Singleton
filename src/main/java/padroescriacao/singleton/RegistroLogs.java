@@ -20,7 +20,7 @@ public class RegistroLogs {
 
     private String caminhoArquivo;
     private String usuarioAtivo;
-    private List<String> logs = new ArrayList<>();
+    private List<String> logs;
 
     public String getCaminhoArquivo() {
         return caminhoArquivo;
@@ -38,26 +38,47 @@ public class RegistroLogs {
         this.usuarioAtivo = usuarioAtivo;
     }
 
-    public synchronized void registrar(String nivel, String mensagem) {
+    public List<String> getLogs() {
+        if (logs == null) {
+            logs = new ArrayList<>();
+        }
+        return logs;
+    }
+
+    public void registrar(String nivel, String mensagem) throws IOException {
+        if (nivel == null || nivel.isBlank()) {
+            throw new IllegalArgumentException("Nível do log não pode ser nulo ou vazio");
+        }
+        if (mensagem == null || mensagem.isBlank()) {
+            throw new IllegalArgumentException("Mensagem do log não pode ser nula ou vazia");
+        }
+
+        if (logs == null) {
+            logs = new ArrayList<>();
+        }
+
         String linha = formatLog(nivel, mensagem);
         logs.add(linha);
 
         if (caminhoArquivo != null && !caminhoArquivo.isBlank()) {
-            try {
-                Path path = Paths.get(caminhoArquivo);
-                if (path.getParent() != null) {
-                    Files.createDirectories(path.getParent());
-                }
-                Files.write(path, (linha + System.lineSeparator()).getBytes(),
-                            StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                System.err.println("Erro ao gravar log: " + e.getMessage());
-            }
+            gravarEmArquivo(linha);
         }
     }
 
-    public synchronized void registrar(String mensagem) {
+    public void registrar(String mensagem) throws IOException {
         registrar("INFO", mensagem);
+    }
+
+    public void limpar() throws IOException {
+        if (logs != null) {
+            logs.clear();
+        }
+        if (caminhoArquivo != null && !caminhoArquivo.isBlank()) {
+            Path path = Paths.get(caminhoArquivo);
+            if (!Files.deleteIfExists(path)) {
+                throw new IOException("Arquivo de log não existe: " + caminhoArquivo);
+            }
+        }
     }
 
     private String formatLog(String nivel, String mensagem) {
@@ -66,18 +87,12 @@ public class RegistroLogs {
         return String.format("%s [%s] (%s) - %s", ts, nivel, user, mensagem);
     }
 
-    public synchronized List<String> getLogs() {
-        return new ArrayList<>(logs);
-    }
-
-    public synchronized void limpar() {
-        logs.clear();
-        if (caminhoArquivo != null && !caminhoArquivo.isBlank()) {
-            try {
-                Files.deleteIfExists(Paths.get(caminhoArquivo));
-            } catch (IOException e) {
-                System.err.println("Erro ao limpar arquivo de logs: " + e.getMessage());
-            }
+    private void gravarEmArquivo(String linha) throws IOException {
+        Path path = Paths.get(caminhoArquivo);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
         }
+        Files.write(path, (linha + System.lineSeparator()).getBytes(),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 }

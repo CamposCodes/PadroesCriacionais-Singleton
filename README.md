@@ -1,4 +1,4 @@
-# Singleton — Sistema de Logs e Parâmetros
+# Singleton — Sistema de Registro de Logs
 
 <p align="center">
   <a href="https://www.ufjf.br/" rel="noopener">
@@ -21,38 +21,36 @@
 
 ## 🧐 Sobre <a name="sobre"></a>
 > **Disciplina:** DCC078 – Aspectos Avançados em Engenharia de Software  
-> **Projeto:** Sistema de Logs e Parâmetros com Singleton
+> **Projeto:** Sistema de Registro de Logs com Singleton
 > **Docente:** Prof. Marco Antônio Pereira Araújo
-> **Data de entrega:** 04/10/2025  
+> **Data de entrega:** 07/10/2025  
 > **Aluno:** [Gabriel Campos Lima Alves](#autor)
 
 ### Padrão Singleton
-Implementação do padrão **Singleton** para criação de um sistema de gerenciamento de logs e parâmetros globais da aplicação.
+Implementação do padrão **Singleton** para criação de um sistema centralizado de registro de logs da aplicação.
 O **Singleton** é um padrão criacional que garante que uma classe tenha apenas uma instância e fornece um ponto de acesso global a ela, demonstrando:
 - Instância única compartilhada em toda a aplicação
-- Acesso global controlado a recursos
-- Inicialização eager (thread-safe por padrão)
+- Acesso global controlado através de `getInstance()`
+- Thread-safety por inicialização eager (estática)
 
 ## 📐 Diagrama de Classe <a name="diagrama"></a>
-O diagrama abaixo representa a arquitetura do projeto, destacando a aplicação do padrão **Singleton** no sistema:
+O diagrama abaixo representa a arquitetura do projeto, destacando a aplicação do padrão **Singleton** no sistema de logs:
 
 <p align="center">
-  <img src="./Singleton.png" alt="Diagrama de Classe - Singleton" width="800"/>
+  <img src="./Singleton.drawio.png" alt="Diagrama de Classe - Singleton" width="800"/>
 </p>
 
 ## 🚀 Funcionalidades <a name="funcionalidades"></a>
-### Sistema de Registro de Logs (Singleton)
-- **RegistroLogs**: Sistema completo de gerenciamento de logs da aplicação
+### Sistema de Logs Implementado
+- **RegistroLogs**: Classe Singleton para gerenciamento centralizado de logs
 
 ### Recursos
-- ✅ Instância única garantida (padrão Singleton)
-- ✅ Thread-safe por inicialização eager
-- ✅ Registro de logs com múltiplos níveis (INFO, ERROR, WARNING, etc.)
-- ✅ Persistência automática de logs em arquivo
-- ✅ Armazenamento de logs em memória para consulta rápida
-- ✅ Formatação automática com timestamp e usuário
-- ✅ Métodos sincronizados para segurança em ambientes multi-thread
-- ✅ Função de limpeza de logs (memória e arquivo)
+- ✅ Instância única garantida pelo padrão Singleton
+- ✅ Registro de logs com múltiplos níveis (INFO, ERROR, WARNING)
+- ✅ Persistência automática em arquivo
+- ✅ Validações com exceptions (IllegalArgumentException, IOException)
+- ✅ Formatação automática com timestamp e identificação de usuário
+- ✅ Compartilhamento de estado entre todas as referências
 
 ##  Tecnologias <a name="tecnologias"></a>
 - **Java 11+**
@@ -61,51 +59,33 @@ O diagrama abaixo representa a arquitetura do projeto, destacando a aplicação 
 - **Git** - Controle de versão
 
 
-## Exemplo de Uso <a name="exemplo"></a>
-```java
 ## 📊 Exemplo de Uso <a name="exemplo"></a>
 ```java
-// Obtendo a instância única do RegistroLogs (Singleton)
+// Obtendo a instância única (Singleton)
 RegistroLogs logs = RegistroLogs.getInstance();
 
-// Configurando o sistema de logs
+// Configurando o sistema
 logs.setCaminhoArquivo("logs/aplicacao.log");
 logs.setUsuarioAtivo("admin");
 
-// Registrando logs com nível padrão (INFO)
+// Registrando logs
 logs.registrar("Aplicação iniciada");
+logs.registrar("INFO", "Sistema configurado");
+logs.registrar("ERROR", "Exemplo de erro");
 
-// Registrando logs com nível específico
-logs.registrar("INFO", "Sistema configurado com sucesso");
-logs.registrar("ERROR", "Erro ao processar requisição");
-logs.registrar("WARNING", "Memória acima de 80%");
-
-// Verificando que é realmente Singleton
+// Verificando que é Singleton
 RegistroLogs logs2 = RegistroLogs.getInstance();
-System.out.println(logs == logs2); // true
+System.out.println(logs == logs2); // true - mesma instância
 
-// Consultando logs em memória
-for (String log : logs.getLogs()) {
-    System.out.println(log);
-}
-
-// Formato de saída dos logs:
-// 2025-10-04 19:32:15 [INFO] (admin) - Aplicação iniciada
-// 2025-10-04 19:32:15 [INFO] (admin) - Sistema configurado com sucesso
-// 2025-10-04 19:32:15 [ERROR] (admin) - Erro ao processar requisição
-
-// Limpando logs quando necessário
-logs.limpar();
-```
+// Compartilhamento de estado
+System.out.println(logs2.getLogs().size()); // Acesso aos mesmos logs
 ```
 
 ## 🧪 Como Executar e Testes <a name="testes"></a>
 ### Cobertura de Testes
-- ✅ **Testes de Singleton**: Validam que apenas uma instância é criada
-- ✅ **Testes de Configuração**: Verificam getters/setters (caminhoArquivo, usuarioAtivo)
-- ✅ **Testes de Registro**: Validam registro de logs com diferentes níveis
-- ✅ **Testes de Persistência**: Cobrem gravação e leitura de arquivo
-- ✅ **Testes de Limpeza**: Verificam função de limpar logs
+- ✅ **Testes de Configuração**: Validam getters e setters
+- ✅ **Testes de Validação**: Verificam exceptions para parâmetros inválidos
+- ✅ **Testes do Padrão**: Confirmam comportamento Singleton
 
 ### Pré-requisitos
 - Java 11 ou superior
@@ -118,9 +98,6 @@ mvn clean compile
 
 # Executar testes
 mvn test
-
-# Executar a aplicação principal
-java -cp target/classes padroescriacao.singleton.Main
 
 # Empacotar
 mvn package
