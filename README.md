@@ -10,7 +10,7 @@
 
 ---
 
-## � Sumário
+## 📝 Sumário
 - [Sobre](#sobre)
 - [Diagrama Nível de Projeto](#diagrama)
 - [Funcionalidades](#funcionalidades)
