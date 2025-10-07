@@ -37,7 +37,7 @@ O **Singleton** é um padrão criacional que garante que uma classe tenha apenas
 O diagrama abaixo representa a arquitetura do projeto, destacando a aplicação do padrão **Singleton** no sistema de logs:
 
 <p align="center">
-  <img src="./Singleton.drawio.png" alt="Diagrama de Classe - Singleton" width="800"/>
+  <img src="./Singleton.png" alt="Diagrama de Classe - Singleton" width="800"/>
 </p>
 
 ## 🚀 Funcionalidades <a name="funcionalidades"></a>
